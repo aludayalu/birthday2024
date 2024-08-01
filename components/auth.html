@@ -1,8 +1,9 @@
 <head>
-    <script src="tailwind.js"></script>
     <link rel="stylesheet" href="main.css"></link>
+    {tailwind}
     {daisyui}
-    <meta id="Viewport" name="viewport" content="initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5, user-scalable=yes"></meta>
+    <meta id="Viewport" name="viewport" content="initial-scale=0.65, maximum-scale=0.65, minimum-scale=0.65, user-scalable=yes"></meta>
+    <script src="main.js"></script>
 </head>
 
 <script>
@@ -17,7 +18,16 @@
     }
     function Submit(e) {
         e.preventDefault()
-        fetch()
+        fetch("/auth?username="+encodeURIComponent(document.getElementById("username").value)+"&password="+encodeURIComponent(document.getElementById("password").value)+"&method="+auth.Value()).then(async (x)=>{
+            var json=await x.json()
+            if (json.error=="") {
+                document.cookie="username="+document.getElementById("username").value+";"
+                document.cookie="password="+document.getElementById("password").value+";"
+                window.location=window.location.href
+            } else {
+                alert(json.error)
+            }
+        })
     }
     function Checkbox(e) {
         if (e.target.checked) {
@@ -46,17 +56,17 @@
                             <label class="label">
                                 <span class="label-text">Username</span>
                             </label>
-                            <input placeholder="username" class="input input-bordered" required style="width: 500px;"></input>
+                            <input placeholder="username" class="input input-bordered" required style="width: 500px;" id="username"></input>
                         </div>
                         <div class="form-control">
                             <label class="label">
                                 <span class="label-text">Password</span>
                             </label>
-                            <input type="{passwordVisible}" placeholder="password" class="input input-bordered" style="margin-bottom: 20px;" required></input>
+                            <input type="{passwordVisible}" placeholder="password" class="input input-bordered" style="margin-bottom: 20px;" required id="password"></input>
                             <div class="form-control">
                                 <div style="width: 100%;">
                                     <div class="wrapper" style="width: fit-content;">
-                                        <label style="margin-right: 10px;">Show Password {x}</label>
+                                        <label style="margin-right: 10px;">Show Password</label>
                                         <input type="checkbox" oninput="Checkbox(event)" class="checkbox checkbox-primary checkbox-sm"></input>
                                     </div>
                                 </div>

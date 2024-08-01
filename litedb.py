@@ -11,14 +11,14 @@ class Connection:
         try:
             return json.loads(get(self.collection, key))
         except:
-            return False
+            return None
 
     def get_all(self):
         try:
             return {key: json.loads(val) for key, val in get_all(self.collection)}
         except Exception as e:
             traceback.print_exc()
-            return False
+            return None
 
 def get_conn(name):
     conn = sqlite3.connect(f"dbs/{name}", check_same_thread=False)

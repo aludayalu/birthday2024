@@ -2,6 +2,7 @@ from flask import request, redirect
 from monster import render, tokeniser, parser, Flask
 import sys, json
 import litedb, hashlib
+import uuid
 
 users=litedb.get_conn("users")
 teams=litedb.get_conn("teams")
@@ -44,6 +45,8 @@ daisyui="<script>"+open("public/pako.js").read()+"</script>"+"""<script>
     </script>
     """
 
+tailwind="<script>"+open("public/tailwind.js").read()+"</script>"
+
 def auth():
     username=request.cookies.get("username")
     password=request.cookies.get("password")
@@ -52,7 +55,7 @@ def auth():
     user_Account=users.get(username)
     if user_Account==None:
         return False
-    if user_Account["password"]==hashlib.sha256(password).hexdigest():
+    if user_Account["password"]==hashlib.sha256(password.encode()).hexdigest():
         return True
     return False
 
@@ -65,6 +68,29 @@ def home():
 
 @app.get("/auth")
 def auth_api():
-    return ""
+    args=dict(request.args)
+    if "password" not in args or "username" not in args or "method" not in args:
+        return {"error":"Missing Fields"}
+    if args["method"]=="login":
+        user_Account=users.get(args["username"])
+        if user_Account==None:
+            return {"error":"User '"+args["username"]+"' not found!"}
+        if user_Account["password"]!=hashlib.sha256(args["password"].encode()).hexdigest():
+            return {"error":"Passwords do not match"}
+        return {"success":True, "error":""}
+    else:
+        user_Account=users.get(args["username"])
+        if user_Account!=None:
+            if user_Account["password"]==hashlib.sha256(args["password"].encode()).hexdigest():
+                return {"success":True, "error":""}
+            else:
+                return {"error":"Incorrect Password"}
+        else:
+            wallet_Id=uuid.uuid4().__str__()
+            base_Wallet=Wallet(id=wallet_Id, balance=0)
+            wallets.set(wallet_Id, base_Wallet)
+            base_User=User(name=args["username"], username=args["username"], password=hashlib.sha256(args["password"].encode()).hexdigest(), wallet=wallet_Id)
+            users.set(args["username"], base_User)
+            return {"success":True, "error":""}
 
 app.run(host="0.0.0.0", port=int(sys.argv[1]))
