@@ -74,10 +74,10 @@
                         </div>
                         <label>
                             <a onclick="FlipAuth()">
-                                <if "auth.Value()=='login'" dep:auth>
+                                <if "auth.Value()!='login'" dep:auth>
                                     <label style="cursor: pointer;">Login Instead?</label>
                                 </if>
-                                <if "auth.Value()!='login'" dep:auth>
+                                <if "auth.Value()=='login'" dep:auth>
                                     <label style="cursor: pointer;">Register Instead?</label>
                                 </if>
                             </a>
