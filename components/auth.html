@@ -1,0 +1,90 @@
+<head>
+    <script src="tailwind.js"></script>
+    <link rel="stylesheet" href="main.css"></link>
+    {daisyui}
+    <meta id="Viewport" name="viewport" content="initial-scale=0.5, maximum-scale=0.5, minimum-scale=0.5, user-scalable=yes"></meta>
+</head>
+
+<script>
+    var auth=Signal("auth", "login")
+    var passwordVisible=Signal("passwordVisible", "password")
+    function FlipAuth() {
+        if (auth.Value()=="login") {
+            auth.setValue("register")
+        } else {
+            auth.setValue("login")
+        }
+    }
+    function Submit(e) {
+        e.preventDefault()
+        fetch()
+    }
+    function Checkbox(e) {
+        if (e.target.checked) {
+            passwordVisible.setValue("text")
+        } else {
+            passwordVisible.setValue("password")
+        }
+    }
+</script>
+
+<body>
+    <div class="wrapper" style="height: 100vh; width: 100vw;">
+        <div class="hero bg-base-200 min-h-screen">
+            <div class="hero-content flex-col lg:flex-row-reverse">
+                <div class="card bg-base-100 w-full shrink-0 shadow-2xl">
+                    <form class="card-body" onsubmit="Submit(event)">
+                        <h1 class="vertical text-4xl font-bold whitespace-nowrap">
+                            <if "auth.Value()=='login'" dep:auth>
+                                Login
+                            </if>
+                            <if "auth.Value()!='login'" dep:auth>
+                                Register
+                            </if>
+                        </h1>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Username</span>
+                            </label>
+                            <input placeholder="username" class="input input-bordered" required style="width: 500px;"></input>
+                        </div>
+                        <div class="form-control">
+                            <label class="label">
+                                <span class="label-text">Password</span>
+                            </label>
+                            <input type="{passwordVisible}" placeholder="password" class="input input-bordered" style="margin-bottom: 20px;" required></input>
+                            <div class="form-control">
+                                <div style="width: 100%;">
+                                    <div class="wrapper" style="width: fit-content;">
+                                        <label style="margin-right: 20px;">Show Password {x}</label>
+                                        <input type="checkbox" oninput="Checkbox(event)" class="checkbox checkbox-primary"></input>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-control mt-6" style="margin-bottom: 10px;">
+                            <button class="btn btn-primary">
+                                <if "auth.Value()=='login'" dep:auth>
+                                    Login
+                                </if>
+                                <if "auth.Value()!='login'" dep:auth>
+                                    Register
+                                </if>
+                            </button>
+                        </div>
+                        <label>
+                            <a onclick="FlipAuth()">
+                                <if "auth.Value()=='login'" dep:auth>
+                                    <label style="cursor: pointer;">Login Instead?</label>
+                                </if>
+                                <if "auth.Value()!='login'" dep:auth>
+                                    <label style="cursor: pointer;">Register Instead?</label>
+                                </if>
+                            </a>
+                        </label>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
