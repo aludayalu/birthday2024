@@ -46,6 +46,7 @@ daisyui="<script>"+open("public/pako.js").read()+"</script>"+"""<script>
     """
 
 tailwind="<script>"+open("public/tailwind.js").read()+"</script>"
+footer=open("components/footer.html").read()
 
 def auth():
     username=request.cookies.get("username")

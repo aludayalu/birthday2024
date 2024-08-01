@@ -7,3 +7,32 @@
 .vertical {
     text-align: center;
 }
+
+.metallic-text {
+    font-size: 4em;
+    font-weight: bold;
+    background: linear-gradient(90deg, 
+        #338EF7 20%, 
+        #ffffff 25%, 
+        #338EF7 30%, 
+        #338EF7 50%, 
+        #ffffff 55%, 
+        #338EF7 60%, 
+        #338EF7 80%, 
+        #ffffff 85%, 
+        #338EF7 90%);
+    background-size: 200% 100%;
+    color: #338EF7;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: metallicGradient 20s linear infinite;
+}
+
+@keyframes metallicGradient {
+    0% {
+        background-position: 200% 0%;
+    }
+    100% {
+        background-position: -200% 0%;
+    }
+}
