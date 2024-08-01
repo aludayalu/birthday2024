@@ -1,0 +1,16 @@
+<head>
+    <script src="tailwind.js"></script>
+    {daisyui}
+</head>
+
+<body>
+    {navbar}
+    <script>
+        var a = Signal("a", [1, 2, 3, 4])
+        setInterval(()=>{
+            var list=a.Value()
+            list.push(list.length+1)
+            a.setValue(list)
+        }, 1000)
+    </script>
+</body>
