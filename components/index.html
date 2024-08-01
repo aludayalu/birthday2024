@@ -5,14 +5,32 @@
     <meta id="Viewport" name="viewport" content="initial-scale=0.8, maximum-scale=0.8, minimum-scale=0.8, user-scalable=yes"></meta>
 </head>
 
+<script>
+    function getCookies() {
+        var cookies=document.cookie.split(";");
+        var cookiesDict={}
+        for (var i in cookies) {
+            var splitted_Cookie=cookies[i].split("=")
+    cookiesDict[splitted_Cookie[0].trim()]=splitted_Cookie[1]
+        }
+        return cookiesDict
+    }
+    var username=getCookies()["username"]
+    console.log(username, getCookies())
+</script>
+
 <body>
     {navbar}
-    <script>
-        var a = Signal("a", [1, 2, 3, 4])
-        setInterval(()=>{
-            var list=a.Value()
-            list.push(list.length+1)
-            a.setValue(list)
-        }, 1000)
-    </script>
+    <div style="margin-top: 50px;"></div>
+    <div class="wrapper">
+        <div>
+            <div class="badge badge-neutral">4th August 2024</div>
+            <br></br>
+            <span class="text-5xl font-bold" style="color: #338EF7;">Aarav's Birthday</span>
+            <br></br>
+            <span class="text-4xl font-semibold text-white">An experience you will not forget</span>
+            <br></br>
+            <span class="text-3xl font-semibold text-white">4 subevents</span>
+        </div>
+    </div>
 </body>
