@@ -10,20 +10,52 @@
 <script>
     var tradex=true
     var accountType=Signal("accountType", "Personal")
-    if (userAccount["team"]==="") {
-        window.location="/"
-    }
+    var dropdownOpened=Signal("dropdownOpened", false)
 </script>
 
 
 <body data-theme="luxury">
     {navbar}
     <div style="margin-top: 20px;"></div>
-    <details class="dropdown">
-        <summary class="btn m-1" id="accountType_summary">{accountType}</summary>
-        <ul class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-            <li><a onclick="document.getElementById('accountType_summary').click(); accountType.setValue('Personal')">Personal</a></li>
-            <li><a onclick="document.getElementById('accountType_summary').click(); accountType.setValue('Team')">Team</a></li>
-        </ul>
-    </details>
+    <div class="wrapper">
+        <details class="dropdown">
+            <summary class="btn" onclick="dropdownOpened.setValue(!dropdownOpened.Value())" id="accountType_summary" style="width: 100%; gap: 4px; background: none; border: none;">
+                <script>
+                    (()=>{
+                        var parentElement=document.currentScript.parentElement
+                        OnChange("dropdownOpened", ()=>{
+                            if (dropdownOpened.Value()) {
+                                parentElement.classList.add("cool")
+                            } else {
+                                parentElement.classList.remove("cool")
+                            }
+                        })
+                    })()
+                </script>
+                {accountType} Account
+                <if "!dropdownOpened.Value()" dep:dropdownOpened>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"></path></svg>
+                </if>
+                <if dropdownOpened>
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up"><path d="m18 15-6-6-6 6"></path></svg>
+                </if>
+            </summary>
+            <ul class="menu dropdown-content bg-base-100 rounded-box w-52 p-2 shadow" style="background-color: rgba(255, 255, 255, 0.1); transform: translateX(-50%); left: 50%; margin-top: 10px;">
+                <li><a onclick="document.getElementById('accountType_summary').click(); accountType.setValue('Personal')">Personal</a></li>
+                <li><a onclick="document.getElementById('accountType_summary').click(); accountType.setValue('Team')">Team</a></li>
+            </ul>
+        </details>
+    </div>
+    <button class="btn cool" style="color: white; height: auto; padding: 7px; border-radius: 12px;">
+        <div class="wrapper">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#338EF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+        </div>
+        <div style="width: 100%; font-size: smaller; margin-top: -10px;" class="vertical">
+            Send
+        </div>
+    </button>
+    <script>
+        var button=document.currentScript.previousElementSibling
+        button.style.height=button.offsetWidth+"px"
+    </script>
 </body>

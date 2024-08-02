@@ -60,3 +60,9 @@
     cursor: pointer;
     transition: all 0.2s ease-in-out;
 }
+
+.cool {
+    background: linear-gradient(-70deg,  rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(35px);
+    border: 2px solid rgba(255, 255, 255, 0.1) !important;
+}
