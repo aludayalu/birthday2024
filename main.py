@@ -1,17 +1,62 @@
 from flask import request, redirect
 from monster import render, tokeniser, parser, Flask
 import sys, json
-import litedb, hashlib
-import uuid
+import litedb, hashlib, time, random
+import uuid, threading
 
 users=litedb.get_conn("users")
 teams=litedb.get_conn("teams")
 wallets=litedb.get_conn("wallets")
-trades=litedb.get_conn("trades")
-assets=litedb.get_conn("assets")
+prices=litedb.get_conn("prices")
 
-def Wallet(id="", balance=0):
-    return {"id":id, "balancer":balance}
+starting_Price=500
+
+current_Prices={"LTZ":[starting_Price], "A":[starting_Price], "B":[starting_Price], "C":[starting_Price], "D":[starting_Price], "E":[starting_Price]}
+
+LTZ_Prices=prices.get("LTZ")
+if LTZ_Prices==None:
+    for x in ["A", "B", "C", "D", "E"]:
+        prices.set(x, [starting_Price])
+    prices.set("LTZ", [starting_Price])
+    current_Prices["LTZ"]=[starting_Price]
+else:
+    for x in ["A", "B", "C", "D", "E"]:
+        current_Prices[x]=prices.get(x)
+    current_Prices["LTZ"]=LTZ_Prices
+
+def calculate_Prices():
+    global current_Prices
+    i=0
+    assets_Trend={}
+    while True:
+        i+=1
+        time.sleep(0.8)
+        for asset in current_Prices:
+            if asset not in assets_Trend:
+                assets_Trend[asset]=5
+            asset_Prices=current_Prices[asset]
+            if i%200==0:
+                referenceIndex=-1
+                if len(asset_Prices)>200:
+                    referenceIndex=len(asset_Prices)-1-200
+                pChange=(asset_Prices[referenceIndex]/asset_Prices[0])*100
+                if pChange>100:
+                    if assets_Trend[asset]<10:
+                        assets_Trend[asset]+=1
+                else:
+                    if assets_Trend[asset]>0:
+                        assets_Trend[asset]-=1
+                print(assets_Trend[asset], pChange)
+            new_Price=int(((random.random() * 10) - (assets_Trend[asset]))+asset_Prices[-1])
+            if new_Price<1:
+                new_Price=starting_Price/10
+            asset_Prices.append(new_Price)
+            asset_Prices=asset_Prices[len(asset_Prices)-500:]
+            prices.set(asset, asset_Prices)
+            current_Prices[asset]=asset_Prices
+
+def Wallet(id="", unlocked_assets={}, locked_assets={}):
+    return {"id":id, "unlocked_assets":unlocked_assets, "locked_assets":locked_assets}
 
 def Team(id="", name="", wallet="", people=[]):
     return {"id":id, "name":name, "wallet":wallet, "people":people}
@@ -91,7 +136,7 @@ def auth_api():
                 return {"error":"Incorrect Password"}
         else:
             wallet_Id=uuid.uuid4().__str__()
-            base_Wallet=Wallet(id=wallet_Id, balance=0)
+            base_Wallet=Wallet(id=wallet_Id, unlocked_assets={"LTZ":20})
             wallets.set(wallet_Id, base_Wallet)
             base_User=User(name=args["username"], username=args["username"], password=hashlib.sha256(args["password"].encode()).hexdigest(), wallet=wallet_Id)
             users.set(args["username"], base_User)
@@ -104,7 +149,7 @@ def create_team():
     if userAccount and "name" in args:
         id=uuid.uuid4().__str__()
         wallet_Id=uuid.uuid4().__str__()
-        base_Wallet=Wallet(id=wallet_Id, balance=0)
+        base_Wallet=Wallet(id=wallet_Id, unlocked_assets={"LTZ":60})
         wallets.set(wallet_Id, base_Wallet)
         new_Team=Team(id=id, name=args["name"], wallet=wallet_Id)
         teams.set(id, new_Team)
@@ -131,5 +176,17 @@ def join_team():
             userAccount["team"]=""
         users.set(userAccount["username"], userAccount)
         return {"success":True}
+
+@app.get("/prices")
+def prices_api():
+    args=dict(request.args)
+    args=dict(request.args)
+    userAccount=auth()
+    if userAccount and "asset" in args:
+        resp = app.response_class(json.dumps(current_Prices[args["asset"]]))
+        resp.headers["Access-Control-Allow-Origin"] = "*"
+        return resp
+
+threading.Thread(target=calculate_Prices, daemon=True).start()
 
 app.run(host="0.0.0.0", port=int(sys.argv[1]))

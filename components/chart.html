@@ -1,0 +1,150 @@
+<style>
+#chartdiv {
+    width: 100%;
+    height: 500px;
+}
+html {
+    background-color: #20242c;
+}
+</style>
+
+<script src="https://cdn.amcharts.com/lib/5/index.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/xy.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/themes/Animated.js"></script>
+<script src="https://cdn.amcharts.com/lib/5/themes/Dark.js"></script>
+
+<script>
+    async function GetPrices() {
+        var out=[]
+        var data=await (await fetch("http://127.0.0.1:5000/prices?asset=C")).json()
+        var date = new Date();
+        date.setHours(0, 0, 0, 0);
+        data.forEach((x)=>{
+            am5.time.add(date, "day", 1);
+            out.push({
+                date: date.getTime(),
+                value: x
+            })
+        })
+        return out
+    }
+</script>
+
+<script>
+
+am5.ready(function() {
+var root = am5.Root.new("chartdiv");
+
+const myTheme = am5.Theme.new(root);
+
+myTheme.rule("AxisLabel", ["minor"]).setAll({
+    fill: am5.color(0xffffff),
+    dy: 1
+});
+
+myTheme.rule("Grid", ["minor"]).setAll({
+    strokeOpacity: 0.08
+});
+
+root.setThemes([
+    am5themes_Animated.new(root),
+    am5themes_Dark.new(root),
+]);
+
+var chart = root.container.children.push(am5xy.XYChart.new(root, {
+    panX: false,
+    panY: false,
+    wheelX: "panX",
+    wheelY: "zoomX",
+    paddingLeft: 0
+}));
+
+var cursor = chart.set("cursor", am5xy.XYCursor.new(root, {
+    behavior: "zoomX"
+}));
+
+cursor.lineY.set("visible", false);
+
+var value = 100;
+
+function generateData() {
+    const mt = new MersenneTwister();
+    value = Math.round((mt.random() * 10 - 5) + value);
+    am5.time.add(date, "day", 1);
+    return {
+        date: date.getTime(),
+        value: value + 200
+    };
+}
+
+function generateDatas(count) {
+    var data = [];
+    for (var i = 0; i < count; ++i) {
+        data.push(generateData());
+    }
+    return data;
+}
+
+var xAxis = chart.xAxes.push(am5xy.DateAxis.new(root, {
+    maxDeviation: 0,
+    baseInterval: {
+        timeUnit: "day",
+        count: 1
+    },
+    renderer: am5xy.AxisRendererX.new(root, {
+        minorGridEnabled: true,
+        minGridDistance: 200,    
+        minorLabelsEnabled: true
+    }),
+    tooltip: am5.Tooltip.new(root, {})
+}));
+
+xAxis.set("minorDateFormats", {
+    day: "dd",
+    month: "MM"
+});
+
+var yAxis = chart.yAxes.push(am5xy.ValueAxis.new(root, {
+    renderer: am5xy.AxisRendererY.new(root, {})
+}));
+
+var series = chart.series.push(am5xy.LineSeries.new(root, {
+    name: "Series",
+    xAxis: xAxis,
+    yAxis: yAxis,
+    valueYField: "value",
+    valueXField: "date",
+    tooltip: am5.Tooltip.new(root, {
+        labelText: "{valueY}"
+    })
+}));
+
+series.bullets.push(function () {
+    var bulletCircle = am5.Circle.new(root, {
+        radius: 5,
+        fill: series.get("fill")
+    });
+    return am5.Bullet.new(root, {
+        sprite: bulletCircle
+    })
+})
+
+chart.set("scrollbarX", am5.Scrollbar.new(root, {
+    orientation: "horizontal"
+}));
+
+var data = [];
+series.data.setAll(data);
+
+series.appear(1000);
+chart.appear(1000, 100);
+
+setInterval(async ()=>{
+    data=await GetPrices()
+    series.data.setAll(data);
+}, 1000)
+
+});
+</script>
+
+<div id="chartdiv"></div>

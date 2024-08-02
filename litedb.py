@@ -21,7 +21,7 @@ class Connection:
             return None
 
 def get_conn(name):
-    conn = sqlite3.connect(f"dbs/{name}", check_same_thread=False)
+    conn = sqlite3.connect(f"databases/{name}", check_same_thread=False)
     cursor = conn.cursor()
     query1 = "CREATE TABLE IF NOT EXISTS main(x TEXT PRIMARY KEY, y TEXT)"
     cursor.execute(query1)
