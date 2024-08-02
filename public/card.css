@@ -1,122 +1,86 @@
-.card {
-  height: 240px;
-  width: 420px;
-  border-radius: 20px;
-  background: rgba(255, 255, 255, 0.1);
-  background: linear-gradient(-70deg,  rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+.card-container {
+  width: auto;
+  height: auto;
+  max-width: 420px;
+
+  aspect-ratio: 420 / 230;
+
+  box-sizing: content-box;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  overflow: hidden;
+
+  background: linear-gradient(
+    -70deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(35px);
   border: 2px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 0 80px rgba(0, 0, 0, 0.25);
-  padding: 30px 30px 30px 30px;
-  overflow: hidden;
-  box-sizing: content-box;
-  position: relative;
-}
 
-.card *{
-    box-sizing: content-box;
-}
-
-.logo {
-  padding-bottom: 40px;
-  opacity: 0.9;
-  display: flex; 
-  justify-content: space-between;
-}
-
-input[id="card-number"] {
-  font-size: 25px;
+  padding: 30px;
+  border-radius: 20px;
   font-family: "Space Mono", monospace;
-  width: 100%;
-  height: 50px;
 }
 
-input[id="card-name"] {
-    color: white;
-    margin-bottom: -2px;
-    font-size: 16px;
-    height: 26px;
-    width: 160px;
-  }
+.card-container * {
+  box-sizing: content-box;
+}
 
-input[id="card-number"]::placeholder {
+#card-top-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+#card-middle-container {
+  margin-top: 20px;
+  position: relative;
+  width: 100%;
+}
+
+#card-bottom-container {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+
+#card-address {
   color: #b5b5b5;
   font-size: 30px;
-  font-family: "Space Mono", monospace;
 }
 
-input::placeholder {
-  color: #b5b5b5;
-  font-family: "Space Mono", monospace;
-}
-
-.group {
-  display: inline-flex;
-  margin: 0;
-  padding: 0;
-}
-
-.card-number {
+#card-team-name-container {
+  width: 40%;
   position: relative;
-  display: inline-block;
-  overflow: hidden;
-  margin-bottom: 30px;
-  width: 100%;
-}
-
-.underline {
-  transition: all 0.3s;
-  display: inline-block;
-  bottom: 0;
-  left: -100%;
-  position: absolute;
-  width: 100%;
-  height: 2px;
-  background-color: #ffffff;
-}
-
-.card-name {
-  font-family: "Space Mono", monospace;
-  padding: 0px 80px 0px 0px;
-  width: 100px;
-  position: relative;
-  display: inline-block;
-  overflow: hidden;
-}
-
-.expiration-date {
-  font-family: "Space Mono", monospace;
-  padding: 0px 0px 0px 0px;
-  width: 120px;
-  position: relative;
-  display: inline-block;
-  overflow: hidden;
-}
-
-.ccv {
-  font-family: "Space Mono", monospace;
-  padding: 0px 0px 0px 0px;
-  width: 120px;
-  position: relative;
-  display: inline-block;
-  overflow: hidden;
-}
-
-input {
-  border: none;
-  font-size: 16px !important;
-  height: 26px;
-  color: #ffffff !important;
-  background: 0;
-  padding: 0;
-}
-
-label {
-  color: white;
-  font-size: 12px;
-  font-weight: normal;
-  font-family: "Space Mono", monospace;
-  pointer-events: none;
   display: block;
+}
+
+.card-member-container {
+  width: 30%;
+  position: relative;
+  display: block;
+}
+
+.card-bottom-text {
+  font-size: 16px;
+  color: #b5b5b5;
+}
+
+.labels {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 12px;
   padding-bottom: 2px;
+}
+
+@media screen and (max-width: 510px) {
+    .card-container {
+        width: 420px;
+        height: 230px;
+        transform: translate(calc(calc(0.06*0.8)*-420px), calc(calc(0.06*0.8)*-230px)) scale(0.8);
+    }
 }

@@ -1,27 +1,27 @@
-<div class="card">
+<div class="card-container">
 
-    <div class="logo">
+    <div id="card-top-container">
         <img src="logo.svg" style="height: 48px;"></img>
         <p style="font-size: 25px;">500 LTZ</p>
     </div>
-    <div class="card-number">
-        <label>Team Address</label>
-        <input id="card-number" placeholder="c490b5dd4b" type="text"
-            disabled="true"></input>
+
+    <div id="card-middle-container">
+        <p class="labels">Team Address</p>
+        <p id="card-address">c490b5dd4b</p>
     </div>
 
-    <div class="group">
-        <div class="card-name">
-            <label>Team Name</label>
-            <input id="card-name" placeholder="Organizers" type="text" disabled="true"></input>
+    <div id="card-bottom-container">
+        <div id="card-team-name-container">
+            <p class="labels">Team Name</p>
+            <p class="card-bottom-text">Organizers</p>
         </div>
-        <div class="expiration-date">
-            <label>Member 1</label>
-            <input id="card-exp" placeholder="Aryamaan" type="text" maxlength="5" disabled="true"></input>
+        <div class="card-member-container">
+            <p class="labels">Member 1</p>
+            <p class="card-bottom-text">Aryamaan</p>
         </div>
-        <div class="ccv">
-            <label>Member 2</label>
-            <input id="card-ccv" placeholder="Aarav" type="text" maxlength="3" disabled="true"></input>
+        <div class="card-member-container">
+            <p class="labels">Member 2</p>
+            <p class="card-bottom-text">Aarav</p>
         </div>
     </div>
 </div>
