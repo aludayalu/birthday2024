@@ -16,7 +16,7 @@ html {
 <script>
     async function GetPrices() {
         var out=[]
-        var data=await (await fetch("http://127.0.0.1:5000/prices?asset=C")).json()
+        var data=await (await fetch("http://127.0.0.1:5000/prices?asset=B")).json()
         var date = new Date();
         date.setHours(0, 0, 0, 0);
         data.forEach((x)=>{

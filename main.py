@@ -100,8 +100,51 @@ def home():
         return render("auth", locals()|globals())
     navbar=render("navbar", locals())
     userAccount="<script>var userAccount="+json.dumps(userAccount)+"</script>"
-    teamsScript="<script>var teams="+json.dumps(teams.get_all())+"</script>"
+    teams_List=[]
+    for team in teams.get_all().values():
+        balance=0
+        wallet=wallets.get(team["wallet"])
+        for asset in wallet["locked_assets"]:
+            if asset=="LTZ":
+                balance+=wallet["locked_assets"][asset]
+                continue
+            balance+=get_Price(asset)*wallet["locked_assets"][asset]
+        for asset in wallet["unlocked_assets"]:
+            if asset=="LTZ":
+                balance+=wallet["unlocked_assets"][asset]
+                continue
+            balance+=get_Price(asset)*wallet["locked_assets"][asset]
+        teams_List.append(team|{"balance":balance})
+    teamsScript="<script>var teams="+json.dumps(teams_List)+"</script>"
     return render("index", locals()|globals())
+
+def get_Price(asset):
+    return current_Prices[asset][-1]
+
+@app.get("/tradex")
+def tradex_page():
+    userAccount=auth()
+    if not userAccount:
+        return render("auth", locals()|globals())
+    navbar=render("navbar", locals())
+    userAccount="<script>var userAccount="+json.dumps(userAccount)+"</script>"
+    teams_List=[]
+    for team in teams.get_all().values():
+        balance=0
+        wallet=wallets.get(team["wallet"])
+        for asset in wallet["locked_assets"]:
+            if asset=="LTZ":
+                balance+=wallet["locked_assets"][asset]
+                continue
+            balance+=get_Price(asset)*wallet["locked_assets"][asset]
+        for asset in wallet["unlocked_assets"]:
+            if asset=="LTZ":
+                balance+=wallet["unlocked_assets"][asset]
+                continue
+            balance+=get_Price(asset)*wallet["locked_assets"][asset]
+        teams_List.append(team|{"balance":balance})
+    teamsScript="<script>var teams="+json.dumps(teams_List)+"</script>"
+    return render("tradex", locals()|globals())
 
 @app.get("/auth")
 def auth_api():
@@ -124,7 +167,7 @@ def auth_api():
                 return {"error":"Incorrect Password"}
         else:
             wallet_Id=uuid.uuid4().__str__()
-            base_Wallet=Wallet(id=wallet_Id, unlocked_assets={"LTZ":20})
+            base_Wallet=Wallet(id=wallet_Id, unlocked_assets={"LTZ":0})
             wallets.set(wallet_Id, base_Wallet)
             base_User=User(name=args["username"], username=args["username"], password=hashlib.sha256(args["password"].encode()).hexdigest(), wallet=wallet_Id)
             users.set(args["username"], base_User)
@@ -137,7 +180,7 @@ def create_team():
     if userAccount and "name" in args:
         id=uuid.uuid4().__str__()
         wallet_Id=uuid.uuid4().__str__()
-        base_Wallet=Wallet(id=wallet_Id, unlocked_assets={"LTZ":60})
+        base_Wallet=Wallet(id=wallet_Id, unlocked_assets={"LTZ":100})
         wallets.set(wallet_Id, base_Wallet)
         new_Team=Team(id=id, name=args["name"], wallet=wallet_Id)
         teams.set(id, new_Team)

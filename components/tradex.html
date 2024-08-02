@@ -1,0 +1,29 @@
+<head>
+    <link rel="stylesheet" href="main.css"></link>
+    {tailwind}
+    {daisyui}
+    {userAccount}
+    {teamsScript}
+    <meta id="Viewport" name="viewport" content="initial-scale=0.8, maximum-scale=0.8, minimum-scale=0.8, user-scalable=yes"></meta>
+</head>
+
+<script>
+    var tradex=true
+    var accountType=Signal("accountType", "Personal")
+    if (userAccount["team"]==="") {
+        window.location="/"
+    }
+</script>
+
+
+<body>
+    {navbar}
+    <div style="margin-top: 20px;"></div>
+    <details class="dropdown">
+        <summary class="btn m-1" id="accountType_summary">{accountType}</summary>
+        <ul class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
+            <li><a onclick="document.getElementById('accountType_summary').click(); accountType.setValue()">Personal</a></li>
+            <li><a>Team</a></li>
+        </ul>
+    </details>
+</body>
