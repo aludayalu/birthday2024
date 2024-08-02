@@ -30,21 +30,12 @@ def calculate_Prices():
         time.sleep(0.8)
         for asset in current_Prices:
             if asset not in assets_Trend:
-                assets_Trend[asset]=5
+                assets_Trend[asset]={"trend":5, "interval":10}
             asset_Prices=current_Prices[asset]
-            if i%200==0:
-                referenceIndex=-1
-                if len(asset_Prices)>200:
-                    referenceIndex=len(asset_Prices)-1-200
-                pChange=(asset_Prices[referenceIndex]/asset_Prices[0])*100
-                if pChange>100:
-                    if assets_Trend[asset]<10:
-                        assets_Trend[asset]+=1
-                else:
-                    if assets_Trend[asset]>0:
-                        assets_Trend[asset]-=1
-                print(assets_Trend[asset], pChange)
-            new_Price=int(((random.random() * 10) - (assets_Trend[asset]))+asset_Prices[-1])
+            if i%assets_Trend[asset]["interval"]==0:
+                assets_Trend[asset]["trend"]=random.choice([0]*50+[1]*40+[2]*35+[3]*28+[4]*18+[5]*10+[6]*18+[7]*28+[8]*35+[9]*40+[10]*50)
+                assets_Trend[asset]["interval"]=random.randrange(2, 20)
+            new_Price=((random.random() * 10) - assets_Trend[asset]["trend"])+asset_Prices[-1]
             if new_Price<1:
                 new_Price=starting_Price/10
             asset_Prices.append(new_Price)
@@ -179,7 +170,7 @@ def prices_api():
     args=dict(request.args)
     args=dict(request.args)
     userAccount=auth()
-    if userAccount and "asset" in args:
+    if (userAccount and "asset" in args) or True:
         resp = app.response_class(json.dumps(current_Prices[args["asset"]]))
         resp.headers["Access-Control-Allow-Origin"] = "*"
         return resp
