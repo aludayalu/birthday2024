@@ -1,6 +1,4 @@
-.card {
-  height: 240px;
-  width: 420px;
+.card_element {
   border-radius: 20px;
   background: rgba(255, 255, 255, 0.1);
   background: linear-gradient(-70deg,  rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
@@ -13,25 +11,25 @@
   position: relative;
 }
 
-.card *{
+.card_element *{
     box-sizing: content-box;
 }
 
-.logo {
+.card_element > .logo {
   padding-bottom: 40px;
   opacity: 0.9;
   display: flex; 
   justify-content: space-between;
 }
 
-input[id="card-number"] {
+.card_element > input[id="card-number"] {
   font-size: 25px;
   font-family: "Space Mono", monospace;
   width: 100%;
   height: 50px;
 }
 
-input[id="card-name"] {
+.card_element > input[id="card-name"] {
     color: white;
     margin-bottom: -2px;
     font-size: 16px;
@@ -39,24 +37,24 @@ input[id="card-name"] {
     width: 160px;
   }
 
-input[id="card-number"]::placeholder {
+  .card_element > input[id="card-number"]::placeholder {
   color: #b5b5b5;
   font-size: 30px;
   font-family: "Space Mono", monospace;
 }
 
-input::placeholder {
+.card_element > input::placeholder {
   color: #b5b5b5;
   font-family: "Space Mono", monospace;
 }
 
-.group {
+.card_element > .group {
   display: inline-flex;
   margin: 0;
   padding: 0;
 }
 
-.card-number {
+.card_element > .card-number {
   position: relative;
   display: inline-block;
   overflow: hidden;
@@ -64,7 +62,7 @@ input::placeholder {
   width: 100%;
 }
 
-.underline {
+.card_element > .underline {
   transition: all 0.3s;
   display: inline-block;
   bottom: 0;
@@ -75,7 +73,7 @@ input::placeholder {
   background-color: #ffffff;
 }
 
-.card-name {
+.card_element > .card-name {
   font-family: "Space Mono", monospace;
   padding: 0px 80px 0px 0px;
   width: 100px;
@@ -84,7 +82,7 @@ input::placeholder {
   overflow: hidden;
 }
 
-.expiration-date {
+.card_element > .expiration-date {
   font-family: "Space Mono", monospace;
   padding: 0px 0px 0px 0px;
   width: 120px;
@@ -93,7 +91,7 @@ input::placeholder {
   overflow: hidden;
 }
 
-.ccv {
+.card_element > .ccv {
   font-family: "Space Mono", monospace;
   padding: 0px 0px 0px 0px;
   width: 120px;
@@ -102,7 +100,7 @@ input::placeholder {
   overflow: hidden;
 }
 
-input {
+.card_element > input {
   border: none;
   font-size: 16px !important;
   height: 26px;
@@ -111,7 +109,7 @@ input {
   padding: 0;
 }
 
-label {
+.card_element > label {
   color: white;
   font-size: 12px;
   font-weight: normal;

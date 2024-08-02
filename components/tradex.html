@@ -8,9 +8,25 @@
 </head>
 
 <script>
+    if (userAccount["team"]==="") {
+        window.location="/"
+    }
     var tradex=true
-    var accountType=Signal("accountType", "Personal")
+    var accountType=Signal("accountType", "Team")
     var dropdownOpened=Signal("dropdownOpened", false)
+    var userTeam={}
+    teams.forEach((x)=>{
+        if (x["id"]==userAccount["team"]) {
+            userTeam=x
+        }
+    })
+    var currentWallet=DerivedFrom("currentWallet", ()=>{
+        if (accountType.Value()=="Team") {
+            return userTeam["id"]
+        } else {
+            return userAccount["wallet"]
+        }
+    }, ["accountType"])
 </script>
 
 
@@ -46,16 +62,91 @@
             </ul>
         </details>
     </div>
-    <button class="btn cool" style="color: white; height: auto; padding: 7px; border-radius: 12px;">
-        <div class="wrapper">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#338EF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+    <div class="wrapper" style="margin-top: 400px;">
+        <script>
+            if (window.innerWidth<window.innerHeight) {
+                document.currentScript.parentElement.style="margin-top: 250px;"
+            }
+        </script>
+        <div style="display: flex; justify-content: space-between; gap: 20px;">
+            <button class="btn cool" style="color: white; height: auto; padding: 7px; border-radius: 12px;" onclick="send_modal.showModal()">
+                <div>
+                    <div class="wrapper">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#338EF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-send"><path d="m22 2-7 20-4-9-9-4Z"></path><path d="M22 2 11 13"></path></svg>
+                    </div>
+                    <div style="width: 60px; font-size: smaller; margin-top: 10px;" class="vertical">
+                        Send
+                    </div>
+                </div>
+                <script>
+                    var button=document.currentScript.parentElement
+                    button.style.height=button.offsetWidth+"px"
+                </script>
+            </button>
+            <button class="btn cool" style="color: white; height: auto; padding: 7px; border-radius: 12px;" onclick="receive_modal.showModal()">
+                <div>
+                    <div class="wrapper">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#338EF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>
+                    </div>
+                    <div style="width: 60px; font-size: smaller; margin-top: 10px;" class="vertical">
+                        Receive
+                    </div>
+                </div>
+                <script>
+                    var button=document.currentScript.parentElement
+                    button.style.height=button.offsetWidth+"px"
+                </script>
+            </button>
+            <button class="btn cool" style="color: white; height: auto; padding: 7px; border-radius: 12px;">
+                <div>
+                    <div class="wrapper">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#338EF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg>
+                    </div>
+                    <div style="width: 60px; font-size: smaller; margin-top: 10px;" class="vertical">
+                        Swap
+                    </div>
+                </div>
+                <script>
+                    var button=document.currentScript.parentElement
+                    button.style.height=button.offsetWidth+"px"
+                </script>
+            </button>
+            <button class="btn cool" style="color: white; height: auto; padding: 7px; border-radius: 12px;">
+                <div>
+                    <div class="wrapper">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#338EF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dollar-sign"><line x1="12" x2="12" y1="2" y2="22"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    </div>
+                    <div style="width: 60px; font-size: smaller; margin-top: 10px;" class="vertical">
+                        Buy
+                    </div>
+                </div>
+                <script>
+                    var button=document.currentScript.parentElement
+                    button.style.height=button.offsetWidth+"px"
+                </script>
+            </button>
         </div>
-        <div style="width: 100%; font-size: smaller; margin-top: -10px;" class="vertical">
-            Send
+    </div>
+    <dialog id="receive_modal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+            <h1 class="text-4xl font-bold text-white vertical">Address</h1>
+            <p class="py-4 text-2xl font-semibol vertical">{currentWallet}</p>
+            <div class="modal-action">
+            <form method="dialog">
+                <button class="btn">Close</button>
+            </form>
+            </div>
         </div>
-    </button>
-    <script>
-        var button=document.currentScript.previousElementSibling
-        button.style.height=button.offsetWidth+"px"
-    </script>
+    </dialog>
+    <dialog id="send_modal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+            <h1 class="text-4xl font-bold text-white vertical">Send Asset</h1>
+            <p class="py-4 text-xl font-semibol vertical">Sending From {accountType} Account</p>
+            <div class="modal-action">
+            <form method="dialog">
+                <button class="btn">Close</button>
+            </form>
+            </div>
+        </div>
+    </dialog>
 </body>
