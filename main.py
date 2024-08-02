@@ -218,6 +218,10 @@ def prices_api():
         resp.headers["Access-Control-Allow-Origin"] = "*"
         return resp
 
+@app.get("/admin")
+def admin():
+    return render("admin",locals()|globals())
+
 threading.Thread(target=calculate_Prices, daemon=True).start()
 
 app.run(host="0.0.0.0", port=int(sys.argv[1]))
