@@ -33,7 +33,11 @@
 #card-top-container {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+}
+
+input[id="card-number"] {
+  font-size: 25px;
+  font-family: "Space Mono", monospace;
   width: 100%;
 }
 

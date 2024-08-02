@@ -43,8 +43,8 @@ def calculate_Prices():
             prices.set(asset, asset_Prices)
             current_Prices[asset]=asset_Prices
 
-def Wallet(id="", unlocked_assets={}, locked_assets={}):
-    return {"id":id, "unlocked_assets":unlocked_assets, "locked_assets":locked_assets}
+def Wallet(id="", assets={}):
+    return {"id":id, "assets":assets}
 
 def Team(id="", name="", wallet="", people=[]):
     return {"id":id, "name":name, "wallet":wallet, "people":people}
@@ -105,21 +105,18 @@ def home():
     for team in teams.get_all().values():
         balance=0
         wallet=wallets.get(team["wallet"])
-        for asset in wallet["locked_assets"]:
+        for asset in wallet["assets"]:
             if asset=="LTZ":
-                balance+=wallet["locked_assets"][asset]
+                balance+=wallet["assets"][asset]
                 continue
-            balance+=get_Price(asset)*wallet["locked_assets"][asset]
-        for asset in wallet["unlocked_assets"]:
-            if asset=="LTZ":
-                balance+=wallet["unlocked_assets"][asset]
-                continue
-            balance+=get_Price(asset)*wallet["locked_assets"][asset]
+            balance+=get_Price(asset)*wallet["assets"][asset]
         teams_List.append(team|{"balance":balance})
     teamsScript="<script>var teams="+json.dumps(teams_List)+"</script>"
     return render("index", locals()|globals())
 
 def get_Price(asset):
+    if asset=="LTZ":
+        return 1
     return current_Prices[asset][-1]
 
 @app.get("/tradex")
@@ -128,23 +125,27 @@ def tradex_page():
     if not userAccount:
         return render("auth", locals()|globals())
     navbar=render("navbar", locals())
-    userAccount="<script>var userAccount="+json.dumps(userAccount)+"</script>"
     teams_List=[]
     for team in teams.get_all().values():
         balance=0
         wallet=wallets.get(team["wallet"])
-        for asset in wallet["locked_assets"]:
+        for asset in wallet["assets"]:
             if asset=="LTZ":
-                balance+=wallet["locked_assets"][asset]
+                balance+=wallet["assets"][asset]
                 continue
-            balance+=get_Price(asset)*wallet["locked_assets"][asset]
-        for asset in wallet["unlocked_assets"]:
-            if asset=="LTZ":
-                balance+=wallet["unlocked_assets"][asset]
-                continue
-            balance+=get_Price(asset)*wallet["locked_assets"][asset]
+            balance+=get_Price(asset)*wallet["assets"][asset]
         teams_List.append(team|{"balance":balance})
+    user_Wallet=wallets.get(userAccount["wallet"])
+    user_Team=teams.get(userAccount["team"])
+    team_Wallet=wallets.get(user_Team["wallet"])
+    for asset in user_Wallet["assets"]:
+        user_Wallet["assets"][asset]={"amount":user_Wallet["assets"][asset], "price":get_Price(asset)}
+    for asset in team_Wallet["assets"]:
+        team_Wallet["assets"][asset]={"amount":team_Wallet["assets"][asset], "price":get_Price(asset)}
+    wallets_Dict={"Personal":user_Wallet["assets"], "Team":team_Wallet["assets"]}
     teamsScript="<script>var teams="+json.dumps(teams_List)+"</script>"
+    walletsScript="<script>var wallets=Signal(\"wallets\", "+json.dumps(wallets_Dict)+")</script>"
+    userAccount="<script>var userAccount="+json.dumps(userAccount)+"</script>"
     return render("tradex", locals()|globals())
 
 @app.get("/auth")
@@ -168,7 +169,7 @@ def auth_api():
                 return {"error":"Incorrect Password"}
         else:
             wallet_Id=uuid.uuid4().__str__()
-            base_Wallet=Wallet(id=wallet_Id, unlocked_assets={"LTZ":0})
+            base_Wallet=Wallet(id=wallet_Id, assets={"LTZ":0})
             wallets.set(wallet_Id, base_Wallet)
             base_User=User(name=args["username"], username=args["username"], password=hashlib.sha256(args["password"].encode()).hexdigest(), wallet=wallet_Id)
             users.set(args["username"], base_User)
@@ -181,7 +182,7 @@ def create_team():
     if userAccount and "name" in args:
         id=uuid.uuid4().__str__()
         wallet_Id=uuid.uuid4().__str__()
-        base_Wallet=Wallet(id=wallet_Id, unlocked_assets={"LTZ":100})
+        base_Wallet=Wallet(id=wallet_Id, assets={"LTZ":100})
         wallets.set(wallet_Id, base_Wallet)
         new_Team=Team(id=id, name=args["name"], wallet=wallet_Id)
         teams.set(id, new_Team)

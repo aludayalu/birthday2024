@@ -1,3 +1,7 @@
+input {
+    color: white !important;
+}
+
 .wrapper {
     display: flex;
     align-items: center;
@@ -59,4 +63,10 @@
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     cursor: pointer;
     transition: all 0.2s ease-in-out;
+}
+
+.cool {
+    background: linear-gradient(-70deg,  rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+    backdrop-filter: blur(35px);
+    border: 2px solid rgba(255, 255, 255, 0.1) !important;
 }
