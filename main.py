@@ -115,6 +115,8 @@ def home():
     return render("index", locals()|globals())
 
 def get_Price(asset):
+    if asset=="LTZ":
+        return 1
     return current_Prices[asset][-1]
 
 @app.get("/tradex")
@@ -123,7 +125,6 @@ def tradex_page():
     if not userAccount:
         return render("auth", locals()|globals())
     navbar=render("navbar", locals())
-    userAccount="<script>var userAccount="+json.dumps(userAccount)+"</script>"
     teams_List=[]
     for team in teams.get_all().values():
         balance=0
@@ -134,7 +135,17 @@ def tradex_page():
                 continue
             balance+=get_Price(asset)*wallet["assets"][asset]
         teams_List.append(team|{"balance":balance})
+    user_Wallet=wallets.get(userAccount["wallet"])
+    user_Team=teams.get(userAccount["team"])
+    team_Wallet=wallets.get(user_Team["wallet"])
+    for asset in user_Wallet["assets"]:
+        user_Wallet["assets"][asset]={"amount":user_Wallet["assets"][asset], "price":get_Price(asset)}
+    for asset in team_Wallet["assets"]:
+        team_Wallet["assets"][asset]={"amount":team_Wallet["assets"][asset], "price":get_Price(asset)}
+    wallets_Dict={"Personal":user_Wallet["assets"], "Team":team_Wallet["assets"]}
     teamsScript="<script>var teams="+json.dumps(teams_List)+"</script>"
+    walletsScript="<script>var wallets=Signal(\"wallets\", "+json.dumps(wallets_Dict)+")</script>"
+    userAccount="<script>var userAccount="+json.dumps(userAccount)+"</script>"
     return render("tradex", locals()|globals())
 
 @app.get("/auth")
