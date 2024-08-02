@@ -99,6 +99,7 @@ def home():
     if not userAccount:
         return render("auth", locals()|globals())
     navbar=render("navbar", locals())
+    card=render("card", locals())
     userAccount="<script>var userAccount="+json.dumps(userAccount)+"</script>"
     teams_List=[]
     for team in teams.get_all().values():
