@@ -22,8 +22,8 @@
     <details class="dropdown">
         <summary class="btn m-1" id="accountType_summary">{accountType}</summary>
         <ul class="menu dropdown-content bg-base-100 rounded-box z-[1] w-52 p-2 shadow">
-            <li><a onclick="document.getElementById('accountType_summary').click(); accountType.setValue()">Personal</a></li>
-            <li><a>Team</a></li>
+            <li><a onclick="document.getElementById('accountType_summary').click(); accountType.setValue('Personal')">Personal</a></li>
+            <li><a onclick="document.getElementById('accountType_summary').click(); accountType.setValue('Team')">Team</a></li>
         </ul>
     </details>
 </body>
