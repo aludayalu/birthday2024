@@ -57,14 +57,17 @@ def auth():
     if user_Account==None:
         return False
     if user_Account["password"]==hashlib.sha256(password.encode()).hexdigest():
-        return True
+        return user_Account
     return False
 
 @app.get("/")
 def home():
-    if not auth():
+    userAccount=auth()
+    if not userAccount:
         return render("auth", locals()|globals())
     navbar=render("navbar", locals())
+    userAccount="<script>var userAccount="+json.dumps(userAccount)+"</script>"
+    teamsScript="<script>var teams="+json.dumps(teams.get_all())+"</script>"
     return render("index", locals()|globals())
 
 @app.get("/auth")
@@ -93,5 +96,40 @@ def auth_api():
             base_User=User(name=args["username"], username=args["username"], password=hashlib.sha256(args["password"].encode()).hexdigest(), wallet=wallet_Id)
             users.set(args["username"], base_User)
             return {"success":True, "error":""}
+
+@app.get("/create_team")
+def create_team():
+    args=dict(request.args)
+    userAccount=auth()
+    if userAccount and "name" in args:
+        id=uuid.uuid4().__str__()
+        wallet_Id=uuid.uuid4().__str__()
+        base_Wallet=Wallet(id=wallet_Id, balance=0)
+        wallets.set(wallet_Id, base_Wallet)
+        new_Team=Team(id=id, name=args["name"], wallet=wallet_Id)
+        teams.set(id, new_Team)
+        return {"success":True}
+
+@app.get("/join_team")
+def join_team():
+    args=dict(request.args)
+    userAccount=auth()
+    if userAccount and "id" in args:
+        team=teams.get(args["id"])
+        if team!=None:
+            if len(team["people"])>1:
+                return {"error":"too many people already in team"}
+            else:
+                team["people"].append(userAccount["username"])
+                userAccount["team"]=args["id"]
+                teams.set(team["id"], team)
+        else:
+            oldTeam=teams.get(userAccount["team"])
+            if oldTeam!=None:
+                oldTeam["people"]=[x for x in oldTeam["people"] if x!=userAccount["username"]]
+                teams.set(oldTeam["id"], oldTeam)
+            userAccount["team"]=""
+        users.set(userAccount["username"], userAccount)
+        return {"success":True}
 
 app.run(host="0.0.0.0", port=int(sys.argv[1]))
