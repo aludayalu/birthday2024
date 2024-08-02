@@ -1,5 +1,6 @@
 <head>
     <link rel="stylesheet" href="main.css"></link>
+    <link rel="stylesheet" href="card.css"></link>
     {tailwind}
     {daisyui}
     {userAccount}
@@ -60,18 +61,33 @@
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-up"><path d="m18 15-6-6-6 6"></path></svg>
                 </if>
             </summary>
-            <ul class="menu dropdown-content bg-base-100 rounded-box w-52 p-2 shadow" style="background-color: rgba(255, 255, 255, 0.1); transform: translateX(-50%); left: 50%; margin-top: 10px;">
+            <ul class="menu dropdown-content bg-base-100 rounded-box w-52 p-2 shadow" style="background-color: rgba(255, 255, 255, 0.1); transform: translateX(-50%); left: 50%; margin-top: 10px; z-index: 10;">
                 <li><a onclick="document.getElementById('accountType_summary').click(); accountType.setValue('Personal')">Personal</a></li>
                 <li><a onclick="document.getElementById('accountType_summary').click(); accountType.setValue('Team')">Team</a></li>
             </ul>
         </details>
     </div>
-    <div class="wrapper" style="margin-top: 400px;">
-        <script>
-            if (window.innerWidth<window.innerHeight) {
-                document.currentScript.parentElement.style="margin-top: 250px;"
-            }
-        </script>
+    <div class="wrapper" style="margin-top: 50px;">
+        <div class="card-container" style="width: 400px;">
+            <div id="card-top-container">
+                <img src="logo.svg" style="height: 48px;"></img>
+                <p style="font-size: 25px;">500 LTZ</p>
+            </div>
+        
+            <div id="card-middle-container">
+                <p class="labels">Address</p>
+                <p id="card-address">{"currentWallet.Value().replaceAll('-', '').slice(0, 10)"}</p>
+            </div>
+        
+            <div id="card-bottom-container">
+                <div id="card-team-name-container">
+                    <p class="labels">Name</p>
+                    <p class="card-bottom-text">{"userTeam['name']"}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="wrapper" style="margin-top: 50px;">
         <div style="display: flex; justify-content: space-between; gap: 20px; width: 400px;">
             <button class="btn cool" style="color: white; height: auto; padding: 7px; border-radius: 12px;" onclick="send_modal.showModal()">
                 <div>

@@ -1,90 +1,93 @@
 .card-container {
-  width: auto;
-  height: auto;
-  max-width: 420px;
+    width: auto;
+    height: auto;
+    max-width: 420px;
 
-  aspect-ratio: 420 / 230;
+    margin-bottom: 10px;
 
-  box-sizing: content-box;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-  overflow: hidden;
+    aspect-ratio: 420 / 230;
 
-  background: linear-gradient(
-    -70deg,
-    rgba(255, 255, 255, 0.1),
-    rgba(255, 255, 255, 0.05)
-  );
-  backdrop-filter: blur(35px);
-  border: 2px solid rgba(255, 255, 255, 0.1);
-  box-shadow: 0 0 80px rgba(0, 0, 0, 0.25);
+    box-sizing: content-box;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow: hidden;
 
-  padding: 30px;
-  border-radius: 20px;
-  font-family: "Space Mono", monospace;
+    background: linear-gradient(
+        -70deg,
+        rgba(255, 255, 255, 0.1),
+        rgba(255, 255, 255, 0.05)
+    );
+    backdrop-filter: blur(35px);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 80px rgba(0, 0, 0, 0.25);
+
+    padding: 30px;
+    border-radius: 20px;
+    font-family: "Space Mono", monospace;
 }
 
 .card-container * {
-  box-sizing: content-box;
+    box-sizing: content-box;
 }
 
 #card-top-container {
-  display: flex;
-  justify-content: space-between;
+    display: flex;
+    justify-content: space-between;
 }
 
 input[id="card-number"] {
-  font-size: 25px;
-  font-family: "Space Mono", monospace;
-  width: 100%;
+    font-size: 25px;
+    font-family: "Space Mono", monospace;
+    width: 100%;
 }
 
 #card-middle-container {
-  margin-top: 20px;
-  position: relative;
-  width: 100%;
+    margin-top: 20px;
+    position: relative;
+    width: 100%;
 }
 
 #card-bottom-container {
-  display: flex;
-  gap: 10px;
-  width: 100%;
+    display: flex;
+    gap: 10px;
+    width: 100%;
 }
 
 #card-address {
-  color: #b5b5b5;
-  font-size: 30px;
+    color: #b5b5b5;
+    font-size: 30px;
 }
 
 #card-team-name-container {
-  width: 40%;
-  position: relative;
-  display: block;
+    width: 40%;
+    position: relative;
+    display: block;
 }
 
 .card-member-container {
-  width: 30%;
-  position: relative;
-  display: block;
+    width: 30%;
+    position: relative;
+    display: block;
 }
 
 .card-bottom-text {
-  font-size: 16px;
-  color: #b5b5b5;
+    font-size: 16px;
+    color: #b5b5b5;
 }
 
 .labels {
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 12px;
-  padding-bottom: 2px;
-}
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 12px;
+    padding-bottom: 2px;
+    }
 
 @media screen and (max-width: 510px) {
     .card-container {
         width: 420px;
         height: 230px;
+        margin-bottom: 0;
         transform: translate(calc(calc(0.06*0.8)*-420px), calc(calc(0.06*0.8)*-230px)) scale(0.8);
     }
 }
