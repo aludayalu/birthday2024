@@ -11,18 +11,15 @@ prices=litedb.get_conn("prices")
 
 starting_Price=500
 
-current_Prices={"LTZ":[starting_Price], "A":[starting_Price], "B":[starting_Price], "C":[starting_Price], "D":[starting_Price], "E":[starting_Price]}
+current_Prices={"A":[starting_Price], "B":[starting_Price], "C":[starting_Price], "D":[starting_Price], "E":[starting_Price]}
 
-LTZ_Prices=prices.get("LTZ")
+LTZ_Prices=prices.get("A")
 if LTZ_Prices==None:
     for x in ["A", "B", "C", "D", "E"]:
         prices.set(x, [starting_Price])
-    prices.set("LTZ", [starting_Price])
-    current_Prices["LTZ"]=[starting_Price]
 else:
     for x in ["A", "B", "C", "D", "E"]:
         current_Prices[x]=prices.get(x)
-    current_Prices["LTZ"]=LTZ_Prices
 
 def calculate_Prices():
     global current_Prices
