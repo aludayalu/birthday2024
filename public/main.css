@@ -70,3 +70,17 @@ input {
     backdrop-filter: blur(35px);
     border: 2px solid rgba(255, 255, 255, 0.1) !important;
 }
+
+.price-input:focus, .price-input:focus-within {
+    box-shadow: none !important;
+    border-color: rgba(0, 0, 0, 0) !important;
+    outline-style: none !important;
+    outline-width: none !important;
+    outline-offset: 0;
+    outline-color: rgba(0, 0, 0, 0);
+}
+
+input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

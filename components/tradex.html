@@ -32,6 +32,10 @@
     var currentAssets=DerivedFrom("currentAssets", ()=>{
         return Object.entries(wallets.Value()[accountType.Value()])
     }, ["accountType", "wallets"])
+    var assetA=Signal("assetA", "LTZ")
+    var assetB=Signal("assetB", "A")
+    var assetAAmount=Signal("assetAAmount", 0)
+    var assetBAmount=Signal("assetBAmount", 0)
 </script>
 
 
@@ -71,7 +75,7 @@
         <div class="card-container" style="width: 400px;">
             <div id="card-top-container">
                 <img src="logo.svg" style="height: 48px;"></img>
-                <p style="font-size: 25px;">500 LTZ</p>
+                <p style="font-size: 25px;">{"userTeam['balance']"} LTZ</p>
             </div>
         
             <div id="card-middle-container">
@@ -117,7 +121,7 @@
                     button.style.height=button.offsetWidth+"px"
                 </script>
             </button>
-            <button class="btn cool" style="color: white; height: auto; padding: 7px; border-radius: 12px;">
+            <button class="btn cool" style="color: white; height: auto; padding: 7px; border-radius: 12px;" onclick="swap_modal.showModal()">
                 <div>
                     <div class="wrapper">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#338EF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-left-right"><path d="M8 3 4 7l4 4"></path><path d="M4 7h16"></path><path d="m16 21 4-4-4-4"></path><path d="M20 17H4"></path></svg>
@@ -201,4 +205,51 @@
             </div>
         </div>
     </dialog>
+    <dialog id="swap_modal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+            <h1 class="text-4xl font-bold text-white vertical">Swap Assets</h1>
+            <div style="background-color: rgba(200, 200, 200, 0.15); border-radius: 12px; margin-top: 14px; border: none !important;" class="cool">
+                <p style="padding: 5px; padding-left: 14px;">From</p>
+                <div style="border: 1px solid rgba(200, 200, 200, 0.15); border-radius: 12px; background-color: #111; padding: 10px;" class="wrapper">
+                    <div style="background-color: rgba(200, 200, 200, 0.15); border-radius: 12px; margin-top: 14px; border: none !important; padding: 10px; width: fit-content; cursor: pointer;" class="cool">
+                        <div class="wrapper">
+                            <img src="https://api.dicebear.com/9.x/initials/svg?seed={assetA}&backgroundType=gradientLinear" style="height: 40px; border-radius: 50%;"></img>
+                            <h1 class="text-4xl text-white font-bold" style="margin-left: 10px; margin-right: 5px;">{assetA}</h1>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"></path></svg>
+                        </div>
+                    </div>
+                    <div style="flex: 1;"></div>
+                    <div>
+                        <input type="number" class="input w-full max-w-xs price-input" style="background: none; text-align: right; font-size:xx-large;" placeholder="{assetAAmount}" oninput="assetAAmount.setValue(Number(event.target.value))"></input>
+                    </div>
+                </div>
+            </div>
+
+            <div style="background-color: rgba(200, 200, 200, 0.15); border-radius: 12px; margin-top: 14px; border: none !important;" class="cool">
+                <p style="padding: 5px; padding-left: 14px;">To</p>
+                <div style="border: 1px solid rgba(200, 200, 200, 0.15); border-radius: 12px; background-color: #111; padding: 10px;" class="wrapper">
+                    <div style="background-color: rgba(200, 200, 200, 0.15); border-radius: 12px; margin-top: 14px; border: none !important; padding: 10px; width: fit-content; cursor: pointer;" class="cool">
+                        <div class="wrapper">
+                            <img src="https://api.dicebear.com/9.x/initials/svg?seed={assetB}&backgroundType=gradientLinear" style="height: 40px; border-radius: 50%;"></img>
+                            <h1 class="text-4xl text-white font-bold" style="margin-left: 10px; margin-right: 5px;">{assetB}</h1>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"></path></svg>
+                        </div>
+                    </div>
+                    <div style="flex: 1;"></div>
+                    <div>
+                        <input disabled class="input w-full max-w-xs price-input" style="background: none; text-align: right; font-size:xx-large;" value="~ {assetBAmount}"></input>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-action">
+            <form method="dialog">
+                <button type="button" class="text-white btn focus:outline-none font-medium rounded-lg text-sm px-4 py-2 text-center" style="background-color: #006FEE; width: 140px;">Swap</button>
+                <button class="btn">Close</button>
+            </form>
+            </div>
+        </div>
+    </dialog>
+    <script>
+        swap_modal.showModal()
+    </script>
 </body>
