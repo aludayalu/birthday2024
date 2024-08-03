@@ -36,6 +36,15 @@
     var assetB=Signal("assetB", "A")
     var assetAAmount=Signal("assetAAmount", 0)
     var assetBAmount=Signal("assetBAmount", 0)
+    var toChange=""
+    function ChangeAsset(x) {
+        x=x.id.split("_")[1]
+        if (toChange=="A") {
+            assetA.setValue(x)
+        } else {
+            assetB.setValue(x)
+        }
+    }
 </script>
 
 
@@ -211,7 +220,7 @@
             <div style="background-color: rgba(200, 200, 200, 0.15); border-radius: 12px; margin-top: 14px; border: none !important;" class="cool">
                 <p style="padding: 5px; padding-left: 14px;">From</p>
                 <div style="border: 1px solid rgba(200, 200, 200, 0.15); border-radius: 12px; background-color: #111; padding: 10px;" class="wrapper">
-                    <div style="background-color: rgba(200, 200, 200, 0.15); border-radius: 12px; margin-top: 14px; border: none !important; padding: 10px; width: fit-content; cursor: pointer;" class="cool">
+                    <div style="background-color: rgba(200, 200, 200, 0.15); border-radius: 12px; margin-top: 14px; border: none !important; padding: 10px; width: fit-content; cursor: pointer;" class="cool" onclick="toChange='A'; asset_Select.showModal()">
                         <div class="wrapper">
                             <img src="https://api.dicebear.com/9.x/initials/svg?seed={assetA}&backgroundType=gradientLinear" style="height: 40px; border-radius: 50%;"></img>
                             <h1 class="text-4xl text-white font-bold" style="margin-left: 10px; margin-right: 5px;">{assetA}</h1>
@@ -228,7 +237,7 @@
             <div style="background-color: rgba(200, 200, 200, 0.15); border-radius: 12px; margin-top: 14px; border: none !important;" class="cool">
                 <p style="padding: 5px; padding-left: 14px;">To</p>
                 <div style="border: 1px solid rgba(200, 200, 200, 0.15); border-radius: 12px; background-color: #111; padding: 10px;" class="wrapper">
-                    <div style="background-color: rgba(200, 200, 200, 0.15); border-radius: 12px; margin-top: 14px; border: none !important; padding: 10px; width: fit-content; cursor: pointer;" class="cool">
+                    <div style="background-color: rgba(200, 200, 200, 0.15); border-radius: 12px; margin-top: 14px; border: none !important; padding: 10px; width: fit-content; cursor: pointer;" class="cool" onclick="toChange='B'; asset_Select.showModal()">
                         <div class="wrapper">
                             <img src="https://api.dicebear.com/9.x/initials/svg?seed={assetB}&backgroundType=gradientLinear" style="height: 40px; border-radius: 50%;"></img>
                             <h1 class="text-4xl text-white font-bold" style="margin-left: 10px; margin-right: 5px;">{assetB}</h1>
@@ -249,7 +258,25 @@
             </div>
         </div>
     </dialog>
-    <script>
-        swap_modal.showModal()
-    </script>
+    <dialog id="asset_Select" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box">
+            <h1 class="text-4xl font-bold text-white vertical">Select Asset</h1>
+            <script>
+                var AllAssets=["LTZ", "A", "B", "C", "D", "E"]
+            </script>
+            <for _ and availableAsset in AllAssets style="display: flex; flex-wrap: wrap; justify-content: center; margin-bottom: 10px;">
+                <div style="background-color: rgba(200, 200, 200, 0.15); border-radius: 12px; margin-top: 14px; border: none !important; padding: 10px; width: fit-content; cursor: pointer; flex: 0 0 auto; margin: 10px;" id="asset_{availableAsset}" onclick="ChangeAsset(this); asset_Select.close();" class="cool">
+                    <div class="wrapper">
+                        <img src="https://api.dicebear.com/9.x/initials/svg?seed={availableAsset}&backgroundType=gradientLinear" style="height: 40px; border-radius: 50%;"></img>
+                        <h1 class="text-4xl text-white font-bold" style="margin-left: 10px; margin-right: 5px;">{availableAsset}</h1>
+                    </div>
+                </div>
+            </for>
+            <div class="modal-action">
+                <form method="dialog">
+                    <button class="btn">Close</button>
+                </form>
+            </div>
+        </div>
+    </dialog>
 </body>
