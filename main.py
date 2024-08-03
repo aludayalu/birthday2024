@@ -112,14 +112,30 @@ def home():
                 balance+=wallet["assets"][asset]
                 continue
             balance+=get_Price(asset)*wallet["assets"][asset]
-        teams_List.append(team|{"balance":balance})
+        teams_List.append(team|{"balance":round(balance, 2)})
     teamsScript="<script>var teams="+json.dumps(teams_List)+"</script>"
     return render("index", locals()|globals())
+
+@app.get("/leaderboard")
+def leaderboard():
+    data=[]
+    for team in teams.get_all().values():
+        balance=0
+        wallet=wallets.get(team["wallet"])
+        for asset in wallet["assets"]:
+            if asset=="LTZ":
+                balance+=wallet["assets"][asset]
+                continue
+            balance+=get_Price(asset)*wallet["assets"][asset]
+        data.append({"name":team["name"], "people":team["people"], "balance":round(balance, 2)})
+    data.sort(key=lambda x:x["balance"], reverse=True)
+    team_Details=json.dumps(data)
+    return render("leaderboard", locals()|globals())
 
 def get_Price(asset):
     if asset=="LTZ":
         return 1
-    return current_Prices[asset][-1]
+    return round(current_Prices[asset][-1], 2)
 
 @app.get("/tradex")
 def tradex_page():
@@ -218,9 +234,9 @@ def join_team():
 def prices_api():
     args=dict(request.args)
     if "asset" in args:
-        resp = app.response_class(json.dumps(current_Prices[args["asset"]]))
+        resp = app.response_class(json.dumps([round(x, 2) for x in current_Prices[args["asset"]]]))
     else:
-        resp = app.response_class(json.dumps(dict([x, current_Prices[x][-1]] for x in current_Prices)))
+        resp = app.response_class(json.dumps(dict([x, round(current_Prices[x][-1], 2)] for x in current_Prices)))
     resp.headers["Access-Control-Allow-Origin"] = "*"
     return resp
 
