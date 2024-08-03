@@ -4,7 +4,7 @@
     height: 500px;
 }
 html {
-    background-color: #20242c;
+    background-color: #100c0c;
 }
 </style>
 
@@ -16,7 +16,7 @@ html {
 <script>
     async function GetPrices() {
         var out=[]
-        var data=await (await fetch("http://127.0.0.1:5000/prices?asset=B")).json()
+        var data=(await (await fetch(new URLSearchParams(window.location.search).get("url"))).json())
         var date = new Date();
         date.setHours(0, 0, 0, 0);
         data.forEach((x)=>{

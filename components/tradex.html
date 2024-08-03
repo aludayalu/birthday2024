@@ -86,6 +86,7 @@
         })
         return balance
     }, ["prices"])
+    var ChartStock=Signal("ChartStock", "A")
 </script>
 
 
@@ -184,7 +185,7 @@
                     button.style.height=button.offsetWidth+"px"
                 </script>
             </button>
-            <button class="btn cool" style="color: white; height: auto; padding: 7px; border-radius: 12px;">
+            <button class="btn cool" style="color: white; height: auto; padding: 7px; border-radius: 12px;" onclick="swap_modal.showModal()">
                 <div>
                     <div class="wrapper">
                         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#338EF7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-dollar-sign"><line x1="12" x2="12" y1="2" y2="22"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
@@ -203,13 +204,13 @@
     <div style="margin-top: 20px;">
         <signal prices>
             <for i and asset in currentAssets>
-                <div class="wrapper" style="margin-bottom: 10px;">
-                    <div class="cool" style="padding: 10px; border-radius: 10px; width: 400px;" id="basset_{}">
-                        <script>
-                            var ticker=asset[0]
-                            var amount=Number(asset[1]["amount"]).toFixed(8).trim("0").replace(".00000000", "")
-                            var price=prices.Value()[ticker]
-                        </script>
+                <script>
+                    var ticker=asset[0]
+                    var amount=Number(asset[1]["amount"]).toFixed(8).trim("0").replace(".00000000", "")
+                    var price=prices.Value()[ticker]
+                </script>
+                <div class="wrapper" style="margin-bottom: 10px; cursor: pointer;" onclick="ChartStock.setValue('{ticker}'); stock_modal.showModal()">
+                    <div class="cool" style="padding: 10px; border-radius: 10px; width: 400px;">
                         <div class="wrapper" style="justify-content: space-between;">
                             <div style="margin-right: 8px;">
                                 <img src="https://api.dicebear.com/9.x/initials/svg?seed={ticker}&backgroundType=gradientLinear" style="height: 50px; width: 50px; border-radius: 50%;"></img>
@@ -318,6 +319,27 @@
                 <form method="dialog">
                     <button class="btn" autofocus>Close</button>
                 </form>
+            </div>
+        </div>
+    </dialog>
+    <dialog id="stock_modal" class="modal modal-bottom sm:modal-middle">
+        <div class="modal-box" style="max-width: 64rem;">
+            <h3 class="text-lg font-bold">Stock {ChartStock}</h3>
+            <signal ChartStock>
+                <script>
+                    function getCurrentUrl() {
+                        const location = window.location;
+                        const url = location.protocol+"//"+location.hostname+(location.port ? ':' + location.port : '')
+                        return url;
+                    }
+                    var source=encodeURIComponent(getCurrentUrl()+"/prices?asset="+ChartStock.Value())
+                </script>
+                <iframe src="/chart?url={source}" style="height: 600px; width: 100%;"></iframe>
+            </signal>
+            <div class="modal-action">
+            <form method="dialog">
+                <button class="btn">Close</button>
+            </form>
             </div>
         </div>
     </dialog>

@@ -217,11 +217,12 @@ def join_team():
 @app.get("/prices")
 def prices_api():
     args=dict(request.args)
-    userAccount=auth()
-    if userAccount:
+    if "asset" in args:
+        resp = app.response_class(json.dumps(current_Prices[args["asset"]]))
+    else:
         resp = app.response_class(json.dumps(dict([x, current_Prices[x][-1]] for x in current_Prices)))
-        resp.headers["Access-Control-Allow-Origin"] = "*"
-        return resp
+    resp.headers["Access-Control-Allow-Origin"] = "*"
+    return resp
 
 @app.get("/buy")
 def buy_asset():
@@ -242,6 +243,10 @@ def buy_asset():
         team_Wallet["assets"][assetB]+=addAmount
         wallets.set(team_Wallet["id"], team_Wallet)
         return {"success":True}
+
+@app.get("/chart")
+def chart():
+    return render("chart")
 
 @app.get("/admin")
 def admin():
