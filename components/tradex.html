@@ -35,7 +35,14 @@
     var assetA=Signal("assetA", "LTZ")
     var assetB=Signal("assetB", "A")
     var assetAAmount=Signal("assetAAmount", 0)
-    var assetBAmount=Signal("assetBAmount", 0)
+    DerivedFrom("assetBAmount", ()=>{
+        var current_Prices=GetSignal("prices").Value()
+        var APrice=current_Prices[assetA.Value()]
+        if (assetA.Value()=="LTZ") {
+            APrice=1
+        }
+        return (APrice/current_Prices[assetB.Value()])*assetAAmount.Value()
+    }, ["assetAAmount", "prices", "assetA", "assetB"])
     var toChange=""
     function ChangeAsset(x) {
         x=x.id.split("_")[1]
@@ -45,6 +52,40 @@
             assetB.setValue(x)
         }
     }
+</script>
+
+<script>
+    var prices=Signal("prices", {});
+    (async()=>{
+        var res=await (await fetch("/prices")).json()
+        prices.setValue(res)
+        setInterval(async ()=>{
+            var res=await (await fetch("/prices")).json()
+            prices.setValue(res)
+        }, 5000)
+    })()
+    async function Swap() {
+        var res=await (await fetch("/buy?assetA="+assetA.Value()+"&assetB="+assetB.Value()+"&amount="+String(assetAAmount.Value()))).json()
+        if (res.error) {
+            alert(res.error)
+        } else {
+            window.location=window.location
+        }
+    }
+    DerivedFrom("netBalance", ()=>{
+        var balance=0
+        var prices=GetSignal("prices").Value()
+        currentAssets.Value().forEach((asset)=>{
+            var ticker=asset[0]
+            var amount=asset[1]["amount"]
+            if (ticker=="LTZ") {
+                balance+=amount
+                return
+            }
+            balance+=prices[ticker]*amount
+        })
+        return balance
+    }, ["prices"])
 </script>
 
 
@@ -75,7 +116,6 @@
                 </if>
             </summary>
             <ul class="menu dropdown-content bg-base-100 rounded-box w-52 p-2 shadow" style="background-color: rgba(255, 255, 255, 0.1); transform: translateX(-50%); left: 50%; margin-top: 10px; z-index: 10;">
-                <li><a onclick="document.getElementById('accountType_summary').click(); accountType.setValue('Personal')">Personal</a></li>
                 <li><a onclick="document.getElementById('accountType_summary').click(); accountType.setValue('Team')">Team</a></li>
             </ul>
         </details>
@@ -84,7 +124,7 @@
         <div class="card-container" style="width: 400px;">
             <div id="card-top-container">
                 <img src="logo.svg" style="height: 48px;"></img>
-                <p style="font-size: 25px;">{"userTeam['balance']"} LTZ</p>
+                <p style="font-size: 25px;">{netBalance} LTZ</p>
             </div>
         
             <div id="card-middle-container">
@@ -161,33 +201,35 @@
         </div>
     </div>
     <div style="margin-top: 20px;">
-        <for i and asset in currentAssets>
-            <div class="wrapper" style="margin-bottom: 10px;">
-                <div class="cool" style="padding: 10px; border-radius: 10px; width: 400px;">
-                    <script>
-                        var ticker=asset[0]
-                        var amount=Number(asset[1]["amount"]).toFixed(8).trim("0").replace(".00000000", "")
-                        var price=Number(asset[1]["price"]).toFixed(8).trim("0").replace(".00000000", "")
-                    </script>
-                    <div class="wrapper" style="justify-content: space-between;">
-                        <div style="margin-right: 8px;">
-                            <img src="https://api.dicebear.com/9.x/initials/svg?seed={ticker}&backgroundType=gradientLinear" style="height: 50px; width: 50px; border-radius: 50%;"></img>
-                        </div>
-                        <div style="flex: 1;">
-                            <div class="text-white">
-                                {ticker}
+        <signal prices>
+            <for i and asset in currentAssets>
+                <div class="wrapper" style="margin-bottom: 10px;">
+                    <div class="cool" style="padding: 10px; border-radius: 10px; width: 400px;" id="basset_{}">
+                        <script>
+                            var ticker=asset[0]
+                            var amount=Number(asset[1]["amount"]).toFixed(8).trim("0").replace(".00000000", "")
+                            var price=prices.Value()[ticker]
+                        </script>
+                        <div class="wrapper" style="justify-content: space-between;">
+                            <div style="margin-right: 8px;">
+                                <img src="https://api.dicebear.com/9.x/initials/svg?seed={ticker}&backgroundType=gradientLinear" style="height: 50px; width: 50px; border-radius: 50%;"></img>
                             </div>
-                            <div class="text-white">
-                                {amount}
+                            <div style="flex: 1;">
+                                <div class="text-white">
+                                    {ticker}
+                                </div>
+                                <div class="text-white">
+                                    {amount}
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            {"price*amount"} LTZ
+                            <div>
+                                {"price*amount"} LTZ
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        </for>
+            </for>
+        </signal>
         <div class="wrapper">
 
         </div>
@@ -252,7 +294,7 @@
             </div>
             <div class="modal-action">
             <form method="dialog">
-                <button type="button" class="text-white btn focus:outline-none font-medium rounded-lg text-sm px-4 py-2 text-center" style="background-color: #006FEE; width: 140px;" autofocus>Swap</button>
+                <button type="button" class="text-white btn focus:outline-none font-medium rounded-lg text-sm px-4 py-2 text-center" style="background-color: #006FEE; width: 140px;" autofocus onclick="Swap()">Swap</button>
                 <button class="btn">Close</button>
             </form>
             </div>

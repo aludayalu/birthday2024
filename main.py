@@ -11,7 +11,7 @@ prices=litedb.get_conn("prices")
 
 starting_Price=500
 
-current_Prices={"A":[starting_Price], "B":[starting_Price], "C":[starting_Price], "D":[starting_Price], "E":[starting_Price]}
+current_Prices={"A":[starting_Price], "B":[starting_Price], "C":[starting_Price], "D":[starting_Price], "E":[starting_Price], "LTZ":[1]}
 
 LTZ_Prices=prices.get("A")
 if LTZ_Prices==None:
@@ -29,6 +29,8 @@ def calculate_Prices():
         i+=1
         time.sleep(0.8)
         for asset in current_Prices:
+            if asset=="LTZ":
+                continue
             if asset not in assets_Trend:
                 assets_Trend[asset]={"trend":5, "interval":10}
             asset_Prices=current_Prices[asset]
@@ -124,6 +126,8 @@ def tradex_page():
     userAccount=auth()
     if not userAccount:
         return render("auth", locals()|globals())
+    if userAccount["team"]=="":
+        return {"error":"Create or Join a team first"}
     navbar=render("navbar", locals())
     teams_List=[]
     for team in teams.get_all().values():
@@ -213,12 +217,31 @@ def join_team():
 @app.get("/prices")
 def prices_api():
     args=dict(request.args)
-    args=dict(request.args)
     userAccount=auth()
-    if (userAccount and "asset" in args) or True:
-        resp = app.response_class(json.dumps(current_Prices[args["asset"]]))
+    if userAccount:
+        resp = app.response_class(json.dumps(dict([x, current_Prices[x][-1]] for x in current_Prices)))
         resp.headers["Access-Control-Allow-Origin"] = "*"
         return resp
+
+@app.get("/buy")
+def buy_asset():
+    args=dict(request.args)
+    userAccount=auth()
+    if userAccount and "assetA" in args and "assetB" in args and "amount" in args:
+        team=teams.get(userAccount["team"])
+        team_Wallet=wallets.get(team["wallet"])
+        assetA=args["assetA"]
+        assetB=args["assetB"]
+        amount=float(args["amount"])
+        if team_Wallet["assets"][assetA]<amount:
+            return {"error":"Insufficient Funds"}
+        team_Wallet["assets"][assetA]-=amount
+        addAmount=(current_Prices[assetA][-1]/current_Prices[assetB][-1])*amount
+        if assetB not in team_Wallet["assets"]:
+            team_Wallet["assets"][assetB]=0
+        team_Wallet["assets"][assetB]+=addAmount
+        wallets.set(team_Wallet["id"], team_Wallet)
+        return {"success":True}
 
 @app.get("/admin")
 def admin():
