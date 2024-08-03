@@ -10,7 +10,6 @@
 
 <script>
     var stockTrend=Signal("stockTrend", "Personal")
-    
 </script>
 
 <body data-theme="luxury">
@@ -20,10 +19,6 @@
             <span class="self-center text-2xl font-semibold whitespace-nowrap text-white">Lumatozer</span>
         </a>
         <div class="flex md:order-2">
-            <if "!window.tradex">
-                <button type="button" class="text-white btn focus:outline-none font-medium rounded-lg text-sm px-4 py-2 text-center" style="background-color: #006FEE; margin-right: 20px;" onclick="window.location='/tradex'">Open TradeX</button>
-                <button type="button" class="text-white btn focus:outline-none font-medium rounded-lg text-sm px-4 py-2 text-center" style="background-color: #006FEE;" onclick="teams_modal.showModal()">Team List</button>
-            </if>
         </div>
         </div>
     </nav>
@@ -42,16 +37,18 @@
         </table>
     </div>
     <script>
-        var teams = [
-            {name: 'Yes', balance: '5000', people: ['Nabhay', 'Aarav']},
-            {name: 'No', balance: '1000', people: ['xyz', 'abc']}
-        ];
+        var teams = {team_Details}
 
         var tableContent = '';
 
         for (let index = 0; index < teams.length; index++) {
             const team = teams[index];
-            
+            if (team.people.length==0) {
+                team.people=["", ""]
+            }
+            if (team.people.length==1) {
+                team.people=[team.people[0], ""]
+            }
             tableContent += '<tr><td>' + team.name + '</td><td>' + team.people[0] + '</td><td>' + team.people[1] + '</td><td>' + team.balance + '</td></tr>';
         }
 

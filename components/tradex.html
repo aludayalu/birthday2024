@@ -92,7 +92,7 @@
             }
             balance+=prices[ticker]*amount
         })
-        return balance
+        return Number(balance).toFixed(5)
     }, ["prices"])
     var ChartStock=Signal("ChartStock", "A")
 </script>
@@ -232,7 +232,7 @@
                                 </div>
                             </div>
                             <div>
-                                {"price*amount"} LTZ
+                                {"Number(price*amount).toFixed(5)"} LTZ
                             </div>
                         </div>
                     </div>
