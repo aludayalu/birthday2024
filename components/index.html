@@ -81,11 +81,14 @@
             </li>
             <li>
                 <hr></hr>
+                <script>
+                    var teamColor=userAccount.team!=="" ? "#45D483" : "white"
+                </script>
                 <div class="timeline-middle">
-                    <svg fill="white" class="h-5 w-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"></path></svg>
+                    <svg fill="{teamColor}" class="h-5 w-5"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"></path></svg>
                 </div>
                 <div class="timeline-end timeline-box" style="border: 2.5px solid rgba(255, 255, 255, 0.15);">
-                    <span style="color: white;">Create or Join Team</span>
+                    <span style="color: {teamColor};">Create or Join Team</span>
                 </div>
                 <hr></hr>
             </li>
