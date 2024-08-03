@@ -305,7 +305,7 @@
                         <input type="number" class="input w-full max-w-xs price-input" style="background: none; text-align: right; font-size:xx-large;" placeholder="{assetAAmount}" oninput="assetAAmount.setValue(Number(event.target.value))"></input>
                         <script>
                             const setMax = () => {
-                                currentAssets.Value().forEach((e) => e[0] === assetA.Value() && assetAAmount.setValue(Number(e[1].amount).toFixed("5")))
+                                currentAssets.Value().forEach((e) => e[0] === assetA.Value() && assetAAmount.setValue(Number(e[1].amount).toFixed("5") - 0.0001))
                             }
                         </script>
                         <p style="background-color: rgba(200, 200, 200, 0.15); border-radius: 6px; padding: 3px 14px; font-size: 12px; cursor: pointer;" onclick="setMax()">Max</p>
