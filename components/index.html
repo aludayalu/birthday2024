@@ -156,6 +156,14 @@
                             window.location=window.location
                         })
                     }
+
+                    var members=team.people
+                    if (members.length==0) {
+                        members=["", ""]
+                    }
+                    if (members.length==1) {
+                        members.push("")
+                    }
                 </script>
                 {card}
             </for>
