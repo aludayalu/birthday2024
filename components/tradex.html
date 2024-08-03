@@ -24,7 +24,7 @@
     })
     var currentWallet=DerivedFrom("currentWallet", ()=>{
         if (accountType.Value()=="Team") {
-            return userTeam["id"]
+            return userTeam["wallet"]
         } else {
             return userAccount["wallet"]
         }
@@ -66,6 +66,14 @@
     })()
     async function Swap() {
         var res=await (await fetch("/buy?assetA="+assetA.Value()+"&assetB="+assetB.Value()+"&amount="+String(assetAAmount.Value()))).json()
+        if (res.error) {
+            alert(res.error)
+        } else {
+            window.location=window.location
+        }
+    }
+    async function Send() {
+        var res=await (await fetch("/send?asset="+assetA.Value()+"&amount="+String(assetAAmount.Value())+"&to="+document.getElementById("toaddress").value)).json()
         if (res.error) {
             alert(res.error)
         } else {
@@ -250,8 +258,28 @@
         <div class="modal-box">
             <h1 class="text-4xl font-bold text-white vertical">Send Asset</h1>
             <p class="py-4 text-xl font-semibol vertical">Sending From {accountType} Account</p>
+            <div style="background-color: rgba(200, 200, 200, 0.15); border-radius: 12px; margin-top: 14px; border: none !important;" class="cool">
+                <p style="padding: 5px; padding-left: 14px;">From</p>
+                <div style="border: 1px solid rgba(200, 200, 200, 0.15); border-radius: 12px; background-color: #111; padding: 10px;" class="wrapper">
+                    <div style="background-color: rgba(200, 200, 200, 0.15); border-radius: 12px; margin-top: 14px; border: none !important; padding: 10px; width: fit-content; cursor: pointer;" class="cool" onclick="toChange='A'; asset_Select.showModal()">
+                        <div class="wrapper">
+                            <img src="https://api.dicebear.com/9.x/initials/svg?seed={assetA}&backgroundType=gradientLinear" style="height: 40px; border-radius: 50%;"></img>
+                            <h1 class="text-4xl text-white font-bold" style="margin-left: 10px; margin-right: 5px;">{assetA}</h1>
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-chevron-down"><path d="m6 9 6 6 6-6"></path></svg>
+                        </div>
+                    </div>
+                    <div style="flex: 1;"></div>
+                    <div>
+                        <input type="number" class="input w-full max-w-xs price-input" style="background: none; text-align: right; font-size:xx-large;" placeholder="{assetAAmount}" oninput="assetAAmount.setValue(Number(event.target.value))"></input>
+                    </div>
+                </div>
+            </div>
+            <div class="wrapper" style="width: 100%;">
+                <input type="text" placeholder="To Address" class="input input-bordered w-full max-w-xs" style="width: 100%; margin-top: 10px; max-width: 100%;" id="toaddress"></input>
+            </div>
             <div class="modal-action">
             <form method="dialog">
+                <button type="button" class="text-white btn focus:outline-none font-medium rounded-lg text-sm px-4 py-2 text-center" style="background-color: #006FEE; width: 140px;" autofocus onclick="Send()">Send</button>
                 <button class="btn">Close</button>
             </form>
             </div>

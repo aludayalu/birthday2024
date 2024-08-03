@@ -244,6 +244,26 @@ def buy_asset():
         wallets.set(team_Wallet["id"], team_Wallet)
         return {"success":True}
 
+@app.get("/send")
+def send_assets():
+    args=dict(request.args)
+    userAccount=auth()
+    if userAccount and "asset" in args and "amount" in args and "to" in args:
+        teamA=teams.get(userAccount["team"])
+        walletA=wallets.get(teamA["wallet"])
+        walletB=wallets.get(args["to"])
+        if walletB==None:
+            return {"error":"to address account does not exist"}
+        if walletA["assets"][args["asset"]]<float(args["amount"]):
+            return {"error":"insufficient funds"}
+        walletA["assets"][args["asset"]]-=float(args["amount"])
+        if args["asset"] not in walletB["assets"]:
+            walletB["assets"][args["asset"]]=0
+        walletB["assets"][args["asset"]]+=float(args["amount"])
+        wallets.set(walletA["id"], walletA)
+        wallets.set(walletB["id"], walletB)
+        return {"success":True}
+
 @app.get("/chart")
 def chart():
     return render("chart")
