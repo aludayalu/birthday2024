@@ -1,18 +1,26 @@
 <div class="card-container">
     <div id="card-top-container">
         <img src="logo.svg" style="height: 48px;"></img>
-        <p style="font-size: 25px;">500 LTZ</p>
+        <p style="font-size: 25px;">{balance} LTZ</p>
     </div>
 
     <div id="card-middle-container">
-        <p class="labels">Address</p>
-        <p id="card-address">c490b5dd4b</p>
+        <div style="flex: 1;">    
+            <p class="labels">Address</p>
+            <p id="card-address">{address}</p>
+        </div>
+        <if "hasJoined">
+            <button team-id="{id}" class="btn" style="color: #D22B2B; border: 1px solid #D22B2B;" onclick="Leave_Team(event)">Leave Team</button>
+        </if>
+        <if "!hasJoined">
+            <button team-id="{id}" class="btn" onclick="Join_Team(event)">Join Team</button>
+        </if>
     </div>
 
     <div id="card-bottom-container">
         <div id="card-team-name-container">
             <p class="labels">Name</p>
-            <p class="card-bottom-text">Organizers</p>
+            <p class="card-bottom-text">{teamname}</p>
         </div>
         <div class="card-member-container">
             <p class="labels">Member 1</p>
