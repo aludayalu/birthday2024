@@ -213,6 +213,11 @@ def join_team():
     args=dict(request.args)
     userAccount=auth()
     if userAccount and "id" in args:
+        oldTeam=teams.get(userAccount["team"])
+        if oldTeam!=None:
+            oldTeam["people"]=[x for x in oldTeam["people"] if x!=userAccount["username"]]
+            teams.set(oldTeam["id"], oldTeam)
+        userAccount["team"]=""
         team=teams.get(args["id"])
         if team!=None:
             if len(team["people"])>1:
@@ -221,12 +226,6 @@ def join_team():
                 team["people"].append(userAccount["username"])
                 userAccount["team"]=args["id"]
                 teams.set(team["id"], team)
-        else:
-            oldTeam=teams.get(userAccount["team"])
-            if oldTeam!=None:
-                oldTeam["people"]=[x for x in oldTeam["people"] if x!=userAccount["username"]]
-                teams.set(oldTeam["id"], oldTeam)
-            userAccount["team"]=""
         users.set(userAccount["username"], userAccount)
         return {"success":True}
 
